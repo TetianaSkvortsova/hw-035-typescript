@@ -1,0 +1,37 @@
+services:
+  app:
+    build:
+      context: .
+      target: builder
+    command: npm run dev
+    ports:
+      - "8080:8080"
+      - "9229:9229"
+    environment:
+      - NODE_ENV=development
+      - PORT=8080
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=sqladmin
+      - DB_PASSWORD=sqladmin
+      - DB_NAME=expenses
+      - JWT_SECRET=eyJ1c2VySWQiOjIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsImlhdCI6MTc2NDY3MTAwNywiZXhwIjoxNzY0Njc0NjA3fQ
+    volumes:
+      - ./src:/app/src  # Syncs host changes to container
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: sqladmin
+      POSTGRES_PASSWORD: sqladmin
+      POSTGRES_DB: expenses
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
