@@ -1,6 +1,11 @@
-export default function PriorityLabel() {
+import './PriorityLabel.scss'
+
+type PriorityLabelProps = {
+    priority: string
+}
+
+export default function PriorityLabel({priority}:PriorityLabelProps) {
     return (
-        // <strong className={'PriorityLabel_'+priority}>{priority}</strong>
-        <strong>High</strong>
+        <strong className={'PriorityLabel_'+priority}>{priority}</strong>
     )
 }

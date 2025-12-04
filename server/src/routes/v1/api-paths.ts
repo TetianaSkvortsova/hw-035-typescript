@@ -11,5 +11,10 @@ export const API_V1 = Object.freeze({
             REGISTER: `/register`,
             LOGIN: `/login`,
         }
+    },
+    CLOSE: {
+        GET: {
+            PROJECTS: '/projects'
+        }
     }
 });

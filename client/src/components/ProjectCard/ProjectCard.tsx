@@ -1,16 +1,16 @@
 import PriorityLabel from "../PriorityLabel/PriorityLabel.tsx";
+import type {Project} from "../Projects/Projects.tsx";
+import "./ProjectCard.scss";
 
-// function ProjectCard({ priority}) {
-function ProjectCard() {
+function ProjectCard({title, priority, description}: Project) {
     return (
         <div className='ProjectCard'>
             {/*<ActionMenu onEdit={handleEditProject}*/}
             {/*            onDelete={() => setOpenConfirm(true)}/>*/}
-            <h3>Project</h3>
-            <PriorityLabel/>
+            <h3>{title}</h3>
+            <PriorityLabel priority={priority}/>
             <p>
-                {/*{description}*/}
-                Test
+                {description}
             </p>
             {/*<ConfirmationDialog
                 open={openConfirm}
