@@ -1,17 +1,10 @@
 import Projects from "../../components/Projects/Projects.tsx";
 import {Button, Stack} from "@mui/material";
-import {useAppDispatch} from "../../store/hooks.ts";
-import {useEffect, useState} from "react";
-import {getProjectsAsync} from "../../store/features/projects.ts";
+import {useState} from "react";
 import NewProjectModal from "../../components/NewProjectModal/NewProjectModal.tsx";
 
 function ProjectsPage() {
-    const dispatch = useAppDispatch();
     const [open, setOpen] = useState(false);
-
-    useEffect(() => {
-        dispatch(getProjectsAsync());
-    }, [dispatch]);
 
     const handleClose = () => {
         setOpen(false);

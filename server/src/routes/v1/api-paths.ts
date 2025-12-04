@@ -14,7 +14,9 @@ export const API_V1 = Object.freeze({
     },
     CLOSE: {
         GET: {
-            PROJECTS: '/projects'
+            PROJECTS: '/projects',
+            TASKS: '/tasks',
+            USERS: '/users',
         }
     }
 });

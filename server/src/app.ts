@@ -46,10 +46,27 @@ closeRouter.get(API_V1.CLOSE.GET.PROJECTS, authenticateJWT, async (request, resp
     return response.status(200).json(result.rows);
 });
 
+closeRouter.get(API_V1.CLOSE.GET.TASKS, authenticateJWT, async (request, response) => {
+    const result = await dbClient.query(QUERIES.SELECT_ALL_TASKS);
+    return response.status(200).json(result.rows);
+});
+
+closeRouter.get(API_V1.CLOSE.GET.USERS, authenticateJWT, async (request, response) => {
+    const result = await dbClient.query(QUERIES.SELECT_ALL_USERS);
+    return response.status(200).json(result.rows);
+});
+
 closeRouter.post(API_V1.CLOSE.GET.PROJECTS, authenticateJWT, async (request, response) => {
     const { title, description, priority } = request.body;
     const params = [title, description, priority];
     const result = await dbClient.query(QUERIES.INSERT_PROJECT, params);
+    return response.status(200).json(result.rows[0]);
+});
+
+closeRouter.post(API_V1.CLOSE.GET.TASKS, authenticateJWT, async (request, response) => {
+    const { title, description, priority, status, user_id, project_id } = request.body;
+    const params = [title, description, priority, status, user_id, project_id];
+    const result = await dbClient.query(QUERIES.INSERT_TASK, params);
     return response.status(200).json(result.rows[0]);
 });
 

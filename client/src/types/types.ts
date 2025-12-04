@@ -10,3 +10,36 @@ export type ProjectsState = {
     status: string;
     error: string | null;
 }
+
+export type TTask = TProject & {
+    status: 'TODO' | 'IN_PROGRESS' | 'DONE';
+    user_full_name: string;
+    user_id: number | undefined | string;
+    project_id: number | undefined | string;
+    project_name: string;
+}
+
+export type TasksState = {
+    data: TTask[];
+    status: string;
+    error: string | null;
+}
+
+export type TUser = {
+    id: number | undefined;
+    user_full_name: string;
+}
+
+export type UserState = {
+    data: TUser[];
+    status: string;
+    error: string | null;
+}
+
+/*export type TStatus = {
+    TODO: string,
+    IN_PROGRESS: string,
+    DONE: string,
+}*/
+
+export type TTaskRequestData = Omit<TTask, 'project_name' | 'user_full_name'>;

@@ -1,38 +1,48 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from 'axios';
-import type {TProject, ProjectsState} from "../../types/types.ts";
+import type {TasksState, TTask, TTaskRequestData} from "../../types/types.ts";
 
-const initialState: ProjectsState = {
+const initialState: TasksState = {
     data: [],
     status: '',
     error: null,
 };
 
 const API_URL = import.meta.env.VITE_API_KEY;
-const PROJECTS_URL = `${API_URL}/projects`;
+const TASKS_URL = `${API_URL}/tasks`;
 const client = axios.create({
     headers: {
         'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsImlhdCI6MTc2NDc3MzMyMywiZXhwIjoyMTI0NzY5NzIzfQ.IUe_KrOhq2ALzsx_pnSPLJiBiRftHmTnXc2bXpI3TIg'
     }
 });
 
-export const getProjectsAsync = createAsyncThunk('projects/getProjects', async () => {
-    const result = await client.get(PROJECTS_URL);
+export const getTasksAsync = createAsyncThunk('tasks/getTasks', async () => {
+    const result = await client.get(TASKS_URL);
     return result.data;
 });
 
-export const addProjectsAsync = createAsyncThunk<TProject, TProject>('projects/addProjects', async (projectData, {rejectWithValue}) => {
+export const addTaskAsync = createAsyncThunk<TTask, TTaskRequestData>('tasks/addTask', async (taskData: TTaskRequestData, {rejectWithValue}) => {
     try {
-        const result = await client.post(PROJECTS_URL, projectData);
+        const result = await client.post(TASKS_URL, taskData);
         return result.data;
     } catch (error) {
-        const errorMessage = (error as Error).message || "Error.";
+        const errorMessage = (error as Error).message || "Error";
         return rejectWithValue(errorMessage);
     }
 });
 
+/*export const addProjectsAsync = createAsyncThunk<TProject, TProject>('projects/addProjects', async (projectData, {rejectWithValue}) => {
+    try {
+        const result = await client.post(PROJECTS_URL, projectData);
+        return result.data;
+    } catch (error) {
+        const errorMessage = (error as Error).message || "Невідома помилка мережі.";
+        return rejectWithValue(errorMessage);
+    }
+});*/
+
 const projectsSlice = createSlice({
-    name: 'projects',
+    name: 'tasks',
     initialState,
     reducers: {
         /* resetLoadedStatus: (state) => {
@@ -40,16 +50,16 @@ const projectsSlice = createSlice({
          },*/
     },
     extraReducers: builder => {
-        builder.addCase(getProjectsAsync.fulfilled, (state, action) => {
+        builder.addCase(getTasksAsync.fulfilled, (state, action) => {
             state.data = action.payload;
         });
 
         builder
-            .addCase(addProjectsAsync.fulfilled, (state, action) => {
+            .addCase(addTaskAsync.fulfilled, (state, action) => {
                 state.data.push(action.payload);
                 state.status = 'idle';
             })
-            .addCase(addProjectsAsync.rejected, (state, action) => {
+            .addCase(addTaskAsync.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message || 'Failed to add project';
             })

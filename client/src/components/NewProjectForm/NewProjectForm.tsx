@@ -74,9 +74,9 @@ export default function NewProjectForm({ onSubmitSuccess }: NewProjectFormProps)
                 onChange={handleChange}
                 required
             >
-                {priorities.map((option) => (
-                    <MenuItem key={option} value={option}>
-                        {option}
+                {priorities.map((priority) => (
+                    <MenuItem key={priority} value={priority}>
+                        {priority}
                     </MenuItem>
                 ))}
             </TextField>
