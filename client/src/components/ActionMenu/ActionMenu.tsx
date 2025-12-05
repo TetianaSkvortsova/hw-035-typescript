@@ -4,6 +4,8 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Box from "@mui/material/Box";
+import {useAppDispatch} from "../../store/hooks.ts";
+import {setCurrentTask} from "../../store/features/tasks.ts";
 
 const options = [
     'Edit',
@@ -13,11 +15,11 @@ const options = [
 const ITEM_HEIGHT = 48;
 
 type ActionMenuProps = {
-    onEdit: () => void,
-    setOpenConfirm: (open: boolean) => void
+    taskId: number;
 }
 
-export default function ActionMenu({onEdit, setOpenConfirm}: ActionMenuProps) {
+export default function ActionMenu({taskId}: ActionMenuProps) {
+    const dispatch = useAppDispatch();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -28,13 +30,18 @@ export default function ActionMenu({onEdit, setOpenConfirm}: ActionMenuProps) {
         setAnchorEl(null);
     };
 
-    const handleMenuItemClick = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-        const action = event.currentTarget.textContent;
-        setAnchorEl(null);
+    const handleMenuItemClick = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => { //
+        const action = event.currentTarget.textContent; //
+        setAnchorEl(null); //
+
         if (action === 'Edit') {
-            onEdit();
+            console.log('Edit'); //
+            // 💡 Встановлюємо ID та дію 'EDIT'
+            dispatch(setCurrentTask({ id: taskId, action: 'EDIT' }));
         } else if (action === 'Delete') {
-            setOpenConfirm(true);
+            console.log('Delete'); //
+            // 💡 Встановлюємо ID та дію 'DELETE'
+            dispatch(setCurrentTask({ id: taskId, action: 'DELETE' }));
         }
     }
 

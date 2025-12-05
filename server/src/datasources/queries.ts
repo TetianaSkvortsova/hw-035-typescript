@@ -36,5 +36,20 @@ export const QUERIES = Object.freeze({
                 select t.id, t.title, t.description, t.priority, t.status, t.user_id, t.project_id, u.user_full_name
                 from new_task t
                 inner join users u on u.id = t.user_id;`,
-    DELETE_TASK_BY_ID: `delete from tasks where id = $1 RETURNING id`
+    DELETE_TASK_BY_ID: `delete from tasks where id = $1 RETURNING id`,
+    SELECT_TASK_BY_ID: `SELECT
+                            t.id,
+                            t.title,
+                            t.description,
+                            t.priority,
+                            t.status,
+                            t.user_id,
+                            t.project_id,
+                            u.user_full_name
+                        FROM
+                            tasks t
+                                INNER JOIN
+                            users u ON t.user_id = u.id
+                        WHERE
+                            t.id = $1`
 });

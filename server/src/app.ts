@@ -70,6 +70,12 @@ closeRouter.post(API_V1.CLOSE.GET.TASKS, authenticateJWT, async (request, respon
     return response.status(200).json(result.rows[0]);
 });
 
+closeRouter.get(`${API_V1.CLOSE.GET.TASKS}/:id`, authenticateJWT, async (request, response) => {
+    const params = [request.params.id];
+    const result = await dbClient.query(QUERIES.SELECT_TASK_BY_ID, params);
+    return response.status(200).json(result.rows[0]);
+});
+
 closeRouter.delete(`${API_V1.CLOSE.GET.TASKS}/:id`, authenticateJWT, async (request, response) => {
     const params = [request.params.id];
     const result = await dbClient.query(QUERIES.DELETE_TASK_BY_ID, params);

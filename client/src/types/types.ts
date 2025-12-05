@@ -24,6 +24,9 @@ export type TasksState = {
     data: TTask[];
     status: string;
     error: string | null;
+    currentTaskId: number | null;
+    activeAction: ActiveAction;
+    currentTask: TTask | null;
 }
 
 export type TUser = {
@@ -38,3 +41,4 @@ export type UserState = {
 }
 
 export type TTaskRequestData = Omit<TTask, 'project_name' | 'user_full_name'>;
+export type ActiveAction = 'EDIT' | 'DELETE' | 'CREATE' | null;

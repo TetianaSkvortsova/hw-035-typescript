@@ -1,14 +1,23 @@
 import * as React from 'react';
 import {TextField, Button, Box, MenuItem} from '@mui/material';
-import {useState} from "react";
-import type {ProjectsState, TProject, TTask, TTaskRequestData, TUser, UserState} from "../../types/types.ts";
-import {useAppSelector} from "../../store/hooks.ts";
+import {useEffect, useState} from "react";
+import type {
+    ProjectsState,
+    TProject,
+    TTask,
+    TTaskRequestData,
+    TUser,
+    UserState
+} from "../../types/types.ts";
+import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
+import {getTasksByIdAsync, setCurrentTask} from "../../store/features/tasks.ts";
 
 type NewTaskFormProps = {
     onSubmitSuccess: (formData: TTaskRequestData) => void;
 };
 
 const initialState: TTaskRequestData = {
+    id: -1,
     title: '',
     description: '',
     priority: 'MEDIUM',
@@ -17,15 +26,35 @@ const initialState: TTaskRequestData = {
     user_id: '',
 }
 
-/*INSERT_TASK: `-- insert into tasks (title, description, priority, status, user_id, project_id)
-        // values ($1, $2, $3, $4, $5, $6) returning id, title, description, priority, status, user_id, project_id`,*/
 const priorities: TTask['priority'][] = ['HIGH', 'MEDIUM', 'LOW',];
 const status: TTask['status'][] = ['TODO', 'IN_PROGRESS', 'DONE',];
 
 export default function NewTaskForm({onSubmitSuccess}: NewTaskFormProps) {
+    const dispatch = useAppDispatch();
     const assignees: UserState = useAppSelector((state) => state.users);
     const projects: ProjectsState = useAppSelector((state) => state.projects);
+    const activeAction = useAppSelector(state => state.tasks.activeAction);
+    const taskId = useAppSelector(state => state.tasks.currentTaskId);
+    const taskData = useAppSelector(state => state.tasks.currentTask);
     const [formData, setFormData] = useState<TTaskRequestData>(initialState);
+    const actionText = activeAction === 'EDIT' ? 'Edit Task' : 'Create Task';
+
+    useEffect(() => {
+        if (activeAction === 'EDIT' && taskId !== null) {
+            if (!taskData || taskData.id !== taskId) {
+                dispatch(getTasksByIdAsync(taskId));
+            }
+        } else {
+            setFormData(initialState);
+        }
+    }, [activeAction, taskId, dispatch, taskData]);
+
+    useEffect(() => {
+        if (activeAction === 'EDIT' && taskData && taskData.id === taskId) {
+            const { user_full_name, ...taskWithoutFullName } = taskData;
+            setFormData(taskWithoutFullName as TTaskRequestData);
+        }
+    }, [activeAction, taskId, taskData]);
 
 
     const handleChange = (
@@ -42,7 +71,7 @@ export default function NewTaskForm({onSubmitSuccess}: NewTaskFormProps) {
         event.preventDefault();
         onSubmitSuccess(formData);
         setFormData(initialState);
-        console.log(formData);
+        dispatch(setCurrentTask(null));
     };
 
     return (
@@ -142,7 +171,7 @@ export default function NewTaskForm({onSubmitSuccess}: NewTaskFormProps) {
                 variant="contained"
                 size="large"
             >
-                Create Task
+                {actionText}
             </Button>
         </Box>
     );

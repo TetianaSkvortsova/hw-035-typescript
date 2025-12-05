@@ -1,11 +1,14 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, type PayloadAction} from "@reduxjs/toolkit";
 import axios from 'axios';
-import type {TasksState, TTask, TTaskRequestData} from "../../types/types.ts";
+import type {ActiveAction, TasksState, TTask, TTaskRequestData} from "../../types/types.ts";
 
 const initialState: TasksState = {
     data: [],
     status: '',
     error: null,
+    currentTaskId: null,
+    activeAction: null,
+    currentTask: null,
 };
 
 const API_URL = import.meta.env.VITE_API_KEY;
@@ -19,6 +22,18 @@ const client = axios.create({
 export const getTasksAsync = createAsyncThunk('tasks/getTasks', async () => {
     const result = await client.get(TASKS_URL);
     return result.data;
+});
+
+export const getTasksByIdAsync = createAsyncThunk('tasks/getTaskById', async (taskId: number, {rejectWithValue}) => {
+    /*const result = await client.get(`${TASKS_URL}/${taskId}`);
+    return result.data;*/
+    try {
+        const result = await client.get(`${TASKS_URL}/${taskId}`);
+        return result.data;
+    } catch (error) {
+        const errorMessage = (error as Error).message || "Error";
+        return rejectWithValue(errorMessage);
+    }
 });
 
 export const addTaskAsync = createAsyncThunk<TTask, TTaskRequestData>('tasks/addTask', async (taskData: TTaskRequestData, {rejectWithValue}) => {
@@ -45,14 +60,31 @@ const projectsSlice = createSlice({
     name: 'tasks',
     initialState,
     reducers: {
-         // resetLoadedStatus: (state) => {
-             // state.loaded = false;
-         // },
+        setCurrentTask: (state, action: PayloadAction<{id: number, action: ActiveAction} | null>) => {
+            if (action.payload) {
+                state.currentTaskId = action.payload.id;
+                state.activeAction = action.payload.action;
+            } else {
+                state.currentTaskId = null;
+                state.activeAction = null;
+            }
+        },
     },
     extraReducers: builder => {
         builder.addCase(getTasksAsync.fulfilled, (state, action) => {
             state.data = action.payload;
         });
+
+        builder
+            .addCase(getTasksByIdAsync.fulfilled, (state, action) => {
+                state.currentTask = action.payload;
+                state.status = 'idle';
+                state.error = null;
+            })
+            .addCase(getTasksByIdAsync.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message || 'Failed find task by id';
+            });
 
         builder
             .addCase(addTaskAsync.fulfilled, (state, action) => {
@@ -68,7 +100,7 @@ const projectsSlice = createSlice({
             .addCase(deleteTaskAsync.fulfilled, (state, action) => {
                 const deletedId = action.payload;
                 state.data = state.data.filter(task => task.id !== deletedId);
-                state.status = 'succeeded';
+                state.status = 'idle';
                 state.error = null;
             })
             .addCase(deleteTaskAsync.rejected, (state, action) => {
@@ -78,5 +110,5 @@ const projectsSlice = createSlice({
     }
 });
 
-// export const { resetLoadedStatus } = projectsSlice.actions;
+export const { setCurrentTask } = projectsSlice.actions;
 export default projectsSlice.reducer;
