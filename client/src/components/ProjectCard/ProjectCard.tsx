@@ -1,12 +1,14 @@
 import PriorityLabel from "../PriorityLabel/PriorityLabel.tsx";
 import "./ProjectCard.scss";
 import type {TProject} from "../../types/types.ts";
+// import ActionMenu from "../ActionMenu/ActionMenu.tsx";
 
 function ProjectCard({title, priority, description}: TProject) {
     return (
         <div className='ProjectCard'>
             {/*<ActionMenu onEdit={handleEditProject}*/}
             {/*            onDelete={() => setOpenConfirm(true)}/>*/}
+            {/*<ActionMenu />*/}
             <h3>{title}</h3>
             <PriorityLabel priority={priority}/>
             <p>

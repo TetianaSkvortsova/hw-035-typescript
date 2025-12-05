@@ -12,6 +12,7 @@ export type ProjectsState = {
 }
 
 export type TTask = TProject & {
+    id: number;
     status: 'TODO' | 'IN_PROGRESS' | 'DONE';
     user_full_name: string;
     user_id: number | undefined | string;
@@ -35,11 +36,5 @@ export type UserState = {
     status: string;
     error: string | null;
 }
-
-/*export type TStatus = {
-    TODO: string,
-    IN_PROGRESS: string,
-    DONE: string,
-}*/
 
 export type TTaskRequestData = Omit<TTask, 'project_name' | 'user_full_name'>;

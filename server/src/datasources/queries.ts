@@ -28,6 +28,13 @@ export const QUERIES = Object.freeze({
         select u.id,
                u.user_full_name
         from users u`,
-    INSERT_TASK: `insert into tasks (title, description, priority, status, user_id, project_id) 
-        values ($1, $2, $3, $4, $5, $6) returning id, title, description, priority, status, user_id, project_id`
+    INSERT_TASK: `with new_task as (
+                insert into tasks (title, description, priority, status, user_id, project_id)
+                values ($1, $2, $3, $4, $5, $6)
+                returning *
+)
+                select t.id, t.title, t.description, t.priority, t.status, t.user_id, t.project_id, u.user_full_name
+                from new_task t
+                inner join users u on u.id = t.user_id;`,
+    DELETE_TASK_BY_ID: `delete from tasks where id = $1 RETURNING id`
 });

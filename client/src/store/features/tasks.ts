@@ -31,23 +31,23 @@ export const addTaskAsync = createAsyncThunk<TTask, TTaskRequestData>('tasks/add
     }
 });
 
-/*export const addProjectsAsync = createAsyncThunk<TProject, TProject>('projects/addProjects', async (projectData, {rejectWithValue}) => {
+export const deleteTaskAsync = createAsyncThunk('tasks/deleteTask', async (taskId: number, {rejectWithValue}) => {
     try {
-        const result = await client.post(PROJECTS_URL, projectData);
-        return result.data;
+        const result = await client.delete(`${TASKS_URL}/${taskId}`);
+        return result.data.id;
     } catch (error) {
-        const errorMessage = (error as Error).message || "Невідома помилка мережі.";
+        const errorMessage = (error as Error).message || "Error";
         return rejectWithValue(errorMessage);
     }
-});*/
+});
 
 const projectsSlice = createSlice({
     name: 'tasks',
     initialState,
     reducers: {
-        /* resetLoadedStatus: (state) => {
-             state.loaded = false;
-         },*/
+         // resetLoadedStatus: (state) => {
+             // state.loaded = false;
+         // },
     },
     extraReducers: builder => {
         builder.addCase(getTasksAsync.fulfilled, (state, action) => {
@@ -62,7 +62,19 @@ const projectsSlice = createSlice({
             .addCase(addTaskAsync.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message || 'Failed to add project';
+            });
+
+        builder
+            .addCase(deleteTaskAsync.fulfilled, (state, action) => {
+                const deletedId = action.payload;
+                state.data = state.data.filter(task => task.id !== deletedId);
+                state.status = 'succeeded';
+                state.error = null;
             })
+            .addCase(deleteTaskAsync.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message || 'Failed to add project';
+            });
     }
 });
 

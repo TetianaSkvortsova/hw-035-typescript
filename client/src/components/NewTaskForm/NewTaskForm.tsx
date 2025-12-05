@@ -17,6 +17,8 @@ const initialState: TTaskRequestData = {
     user_id: '',
 }
 
+/*INSERT_TASK: `-- insert into tasks (title, description, priority, status, user_id, project_id)
+        // values ($1, $2, $3, $4, $5, $6) returning id, title, description, priority, status, user_id, project_id`,*/
 const priorities: TTask['priority'][] = ['HIGH', 'MEDIUM', 'LOW',];
 const status: TTask['status'][] = ['TODO', 'IN_PROGRESS', 'DONE',];
 
