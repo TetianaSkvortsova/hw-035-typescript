@@ -1,11 +1,14 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, type PayloadAction} from "@reduxjs/toolkit";
 import axios from 'axios';
-import type {TProject, ProjectsState} from "../../types/types.ts";
+import type {TProject, ProjectsState, ActiveAction} from "../../types/types.ts";
 
 const initialState: ProjectsState = {
     data: [],
     status: '',
     error: null,
+    currentProjectId: null,
+    activeAction: null,
+    currentProject: null,
 };
 
 const API_URL = import.meta.env.VITE_API_KEY;
@@ -31,13 +34,29 @@ export const addProjectsAsync = createAsyncThunk<TProject, TProject>('projects/a
     }
 });
 
+export const deleteProjectAsync = createAsyncThunk('tasks/deleteProject', async (projectId: number, {rejectWithValue}) => {
+    try {
+        const result = await client.delete(`${PROJECTS_URL}/${projectId}`);
+        return result.data.id;
+    } catch (error) {
+        const errorMessage = (error as Error).message || "Error";
+        return rejectWithValue(errorMessage);
+    }
+});
+
 const projectsSlice = createSlice({
     name: 'projects',
     initialState,
     reducers: {
-        /* resetLoadedStatus: (state) => {
-             state.loaded = false;
-         },*/
+        setCurrentProject: (state, action: PayloadAction<{id: number, action: ActiveAction} | null>) => {
+            if (action.payload) {
+                state.currentProjectId = action.payload.id;
+                state.activeAction = action.payload.action;
+            } else {
+                state.currentProjectId = null;
+                state.activeAction = null;
+            }
+        },
     },
     extraReducers: builder => {
         builder.addCase(getProjectsAsync.fulfilled, (state, action) => {
@@ -52,9 +71,21 @@ const projectsSlice = createSlice({
             .addCase(addProjectsAsync.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message || 'Failed to add project';
+            });
+
+        builder
+            .addCase(deleteProjectAsync.fulfilled, (state, action) => {
+                const deletedId = action.payload;
+                state.data = state.data.filter(project => project.id !== deletedId);
+                state.status = 'idle';
+                state.error = null;
             })
+            .addCase(deleteProjectAsync.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message || 'Failed to add project';
+            });
     }
 });
 
-// export const { resetLoadedStatus } = projectsSlice.actions;
+export const { setCurrentProject } = projectsSlice.actions;
 export default projectsSlice.reducer;

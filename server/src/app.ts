@@ -70,6 +70,14 @@ closeRouter.post(API_V1.CLOSE.GET.TASKS, authenticateJWT, async (request, respon
     return response.status(200).json(result.rows[0]);
 });
 
+closeRouter.put(`${API_V1.CLOSE.GET.TASKS}/:id`, authenticateJWT, async (request, response) => {
+    const task_id = Number(request.params.id);
+    const { title, description, priority, status, user_id, project_id } = request.body;
+    const queryParams = [task_id, title, description, priority, status, user_id, project_id];
+    const result = await dbClient.query(QUERIES.UPDATE_TASK_BY_ID, queryParams);
+    return response.status(200).json(result.rows[0]);
+});
+
 closeRouter.get(`${API_V1.CLOSE.GET.TASKS}/:id`, authenticateJWT, async (request, response) => {
     const params = [request.params.id];
     const result = await dbClient.query(QUERIES.SELECT_TASK_BY_ID, params);
@@ -79,6 +87,12 @@ closeRouter.get(`${API_V1.CLOSE.GET.TASKS}/:id`, authenticateJWT, async (request
 closeRouter.delete(`${API_V1.CLOSE.GET.TASKS}/:id`, authenticateJWT, async (request, response) => {
     const params = [request.params.id];
     const result = await dbClient.query(QUERIES.DELETE_TASK_BY_ID, params);
+    return response.status(200).json(result.rows[0]);
+});
+
+closeRouter.delete(`${API_V1.CLOSE.GET.PROJECTS}/:id`, authenticateJWT, async (request, response) => {
+    const params = [request.params.id];
+    const result = await dbClient.query(QUERIES.DELETE_PROJECT_BY_ID, params);
     return response.status(200).json(result.rows[0]);
 });
 

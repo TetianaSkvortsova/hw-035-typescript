@@ -1,27 +1,18 @@
 import PriorityLabel from "../PriorityLabel/PriorityLabel.tsx";
 import "./ProjectCard.scss";
-import type {TProject} from "../../types/types.ts";
+import type {ProjectRequiredId} from "../../types/types.ts";
+import ActionMenuProject from "../ActionMenuProject/ActionMenuProject.tsx";
 // import ActionMenu from "../ActionMenu/ActionMenu.tsx";
 
-function ProjectCard({title, priority, description}: TProject) {
+function ProjectCard({id, title, priority, description}: ProjectRequiredId) {
     return (
         <div className='ProjectCard'>
-            {/*<ActionMenu onEdit={handleEditProject}*/}
-            {/*            onDelete={() => setOpenConfirm(true)}/>*/}
-            {/*<ActionMenu />*/}
+            <ActionMenuProject itemId={id}/>
             <h3>{title}</h3>
             <PriorityLabel priority={priority}/>
             <p>
                 {description}
             </p>
-            {/*<ConfirmationDialog
-                open={openConfirm}
-                onClose={handleCloseConfirm}
-                onConfirm={handleDeleteProject}
-                title={"Confirm Project Deletion"}
-                description={"Are you sure you want to permanently delete this project? This action cannot be undone."}
-                confirmText="Delete Project"
-            />*/}
         </div>
     );
 }

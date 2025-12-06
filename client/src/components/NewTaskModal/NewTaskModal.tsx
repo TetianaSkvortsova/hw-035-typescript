@@ -3,21 +3,27 @@ import CloseIcon from '@mui/icons-material/Close';
 import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
 import type {TTaskRequestData} from "../../types/types.ts";
 import NewTaskForm from "../NewTaskForm/NewTaskForm.tsx";
-import {addTaskAsync} from "../../store/features/tasks.ts";
+import {addTaskAsync, updateTasksByIdAsync} from "../../store/features/tasks.ts";
 
 type NewTaskModalProps = {
     open: boolean;
     onClose: () => void;
-    // mode: 'EDIT' | 'CREATE';
 }
 
 export default function NewTaskModal({open, onClose}: NewTaskModalProps) {
     const dispatch = useAppDispatch();
     const activeAction = useAppSelector(state => state.tasks.activeAction);
     const handleFormSubmit = (formData: TTaskRequestData) => {
-            // dispatch(addTaskAsync(formData));
-        console.log(activeAction);
-            onClose();
+        const {id} = formData;
+        if (activeAction === 'EDIT') {
+            dispatch(updateTasksByIdAsync({
+                taskId: id,
+                taskData: formData
+            }));
+        } else {
+            dispatch(addTaskAsync(formData));
+        }
+        onClose();
     };
 
     return (

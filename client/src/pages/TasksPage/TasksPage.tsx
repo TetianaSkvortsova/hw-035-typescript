@@ -11,29 +11,17 @@ function TasksPage() {
     const [open, setOpen] = useState(false);
     const currentTaskId = useAppSelector(state => state.tasks.currentTaskId);
     const activeAction = useAppSelector(state => state.tasks.activeAction);
-    // const [openNewTaskModal, setOpenNewTaskModal] = useState(false);
 
     const openConfirmDialog = activeAction === 'DELETE'; // <-- Діалог відкритий лише для 'DELETE'
     const openModalMode = activeAction === 'EDIT';
-    if (openModalMode) {
-        // setOpen(true);
-        console.log(currentTaskId);
-    }
-
-    // const openCreateModal = activeAction === 'CREATE';
-
 
     const handleClose = () => {
         setOpen(false);
         dispatch(setCurrentTask(null));
-        // setOpenNewTaskModal(false);
     }
 
     const handleOpenCreate = () => {
         setOpen(true);
-
-        // setOpenNewTaskModal(true);
-        console.log(currentTaskId);
     }
 
     const handleCloseConfirm = () => {
@@ -48,7 +36,8 @@ function TasksPage() {
             <Stack spacing={2} direction="row" sx={{
                 mx: 'auto',
                 my: 2.5,
-                width: 'fit-content'
+                width: 'fit-content',
+                marginRight: '0'
             }}>
                 <Button
                     variant="contained"

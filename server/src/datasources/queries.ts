@@ -37,6 +37,21 @@ export const QUERIES = Object.freeze({
                 from new_task t
                 inner join users u on u.id = t.user_id;`,
     DELETE_TASK_BY_ID: `delete from tasks where id = $1 RETURNING id`,
+    DELETE_PROJECT_BY_ID: `DELETE FROM projects WHERE id = $1 RETURNING id`,
+    UPDATE_PROJECT_BY_ID: `UPDATE projects SET title = $2, description = $3, priority = $4::priority_level WHERE id = $1 RETURNING id`,
+    UPDATE_TASK_BY_ID: `with updated_task as (
+                        UPDATE tasks SET 
+                            title = $2, 
+                            description = $3, 
+                            priority = $4::priority_level, 
+                            status = $5::status,
+                            user_id = $6,
+                            project_id = $7
+                    WHERE id = $1 RETURNING *
+                    )
+                    select t.id, t.title, t.description, t.priority, t.status, t.user_id, t.project_id, p.title, u.user_full_name from updated_task t
+                    left outer join projects p on t.project_id = p.id
+                    left outer join users u on t.user_id = u.id`,
     SELECT_TASK_BY_ID: `SELECT
                             t.id,
                             t.title,

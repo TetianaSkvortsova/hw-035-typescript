@@ -20,7 +20,7 @@ const Item = styled(Paper)(({theme}) => ({
 export default function Tasks() {
     const {data: tasks} = useAppSelector(state => state.tasks);
     return (
-        <Box sx={{flexGrow: 1, marginTop: 8}}>
+        <Box sx={{flexGrow: 1, marginTop: 0}}>
             <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}}>
                 {tasks.map((task: TTask) => (
                     <Grid key={task.id} size={{xs: 2, sm: 4, md: 4}}>

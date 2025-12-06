@@ -25,10 +25,23 @@ export const getTasksAsync = createAsyncThunk('tasks/getTasks', async () => {
 });
 
 export const getTasksByIdAsync = createAsyncThunk('tasks/getTaskById', async (taskId: number, {rejectWithValue}) => {
-    /*const result = await client.get(`${TASKS_URL}/${taskId}`);
-    return result.data;*/
     try {
         const result = await client.get(`${TASKS_URL}/${taskId}`);
+        return result.data;
+    } catch (error) {
+        const errorMessage = (error as Error).message || "Error";
+        return rejectWithValue(errorMessage);
+    }
+});
+
+export const updateTasksByIdAsync = createAsyncThunk<
+    TTaskRequestData,
+    { taskId: number; taskData: TTaskRequestData }
+>(
+    'tasks/updateTaskById',
+    async ({ taskId, taskData }, {rejectWithValue}) => {
+    try {
+        const result = await client.put(`${TASKS_URL}/${taskId}`, taskData);
         return result.data;
     } catch (error) {
         const errorMessage = (error as Error).message || "Error";
@@ -69,6 +82,10 @@ const projectsSlice = createSlice({
                 state.activeAction = null;
             }
         },
+
+        removeTasksByProjectId: (state, action: PayloadAction<{projectId: number} | null>) => {
+            state.data = state.data.filter(task => task.project_id !== action.payload?.projectId);
+        }
     },
     extraReducers: builder => {
         builder.addCase(getTasksAsync.fulfilled, (state, action) => {
@@ -86,6 +103,24 @@ const projectsSlice = createSlice({
                 state.error = action.error.message || 'Failed find task by id';
             });
 
+        builder
+            .addCase(updateTasksByIdAsync.fulfilled, (state, action) => {
+                const { id, ...updates } = action.payload;
+                const index = state.data.findIndex(task => task.id === id);
+                if (index !== -1) {
+                    state.data[index] = {
+                        ...state.data[index],
+                        ...updates
+                    };
+                }
+                state.status = 'idle';
+                state.error = null;
+            })
+            .addCase(updateTasksByIdAsync.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message || 'Failed find task by id';
+            });
+        // updateTasksByIdAsync
         builder
             .addCase(addTaskAsync.fulfilled, (state, action) => {
                 state.data.push(action.payload);
@@ -110,5 +145,5 @@ const projectsSlice = createSlice({
     }
 });
 
-export const { setCurrentTask } = projectsSlice.actions;
+export const { setCurrentTask, removeTasksByProjectId } = projectsSlice.actions;
 export default projectsSlice.reducer;

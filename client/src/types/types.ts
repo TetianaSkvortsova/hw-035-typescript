@@ -1,14 +1,21 @@
 export type TProject = {
-    id?: number;
+    id?: number | null;
     title: string;
     description: string;
     priority: 'HIGH' | 'MEDIUM' | 'LOW';
+}
+
+export type ProjectRequiredId = TProject &{
+    id: number;
 }
 
 export type ProjectsState = {
     data: TProject[];
     status: string;
     error: string | null;
+    currentProjectId: number | null,
+    activeAction: ActiveAction,
+    currentProject: TProject | null,
 }
 
 export type TTask = TProject & {
@@ -42,3 +49,7 @@ export type UserState = {
 
 export type TTaskRequestData = Omit<TTask, 'project_name' | 'user_full_name'>;
 export type ActiveAction = 'EDIT' | 'DELETE' | 'CREATE' | null;
+
+export type ActionMenuProps = {
+    itemId: number;
+}
