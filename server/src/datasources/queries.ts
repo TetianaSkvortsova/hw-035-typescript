@@ -66,5 +66,14 @@ export const QUERIES = Object.freeze({
                                 INNER JOIN
                             users u ON t.user_id = u.id
                         WHERE
-                            t.id = $1`
+                            t.id = $1`,
+    SELECT_PROJECT_BY_ID: `SELECT
+                            p.id,
+                            p.title,
+                            p.description,
+                            p.priority
+                        FROM
+                            projects p
+                       WHERE
+                           p.id = $1`
 });

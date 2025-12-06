@@ -13,7 +13,7 @@ function ProjectsPage() {
     const currentProjectId = useAppSelector(state => state.projects.currentProjectId);
     const activeAction = useAppSelector(state => state.projects.activeAction);
     const openConfirmDialog = activeAction === 'DELETE'; // <-- Діалог відкритий лише для 'DELETE'
-    // const openModalMode = activeAction === 'EDIT';
+    const openModalMode = activeAction === 'EDIT';
 
     const handleClose = () => {
         setOpen(false);
@@ -49,6 +49,7 @@ function ProjectsPage() {
             </Stack>
             <Projects />
             <NewProjectModal open={open} onClose={handleClose}/>
+            <NewProjectModal open={openModalMode} onClose={handleClose}/>
             <ConfirmationDialog
                 open={openConfirmDialog}
                 onClose={handleClose}

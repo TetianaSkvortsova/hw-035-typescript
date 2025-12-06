@@ -24,6 +24,16 @@ export const getProjectsAsync = createAsyncThunk('projects/getProjects', async (
     return result.data;
 });
 
+export const getProjectByIdAsync = createAsyncThunk('projects/getProjectById', async (projectId: number, {rejectWithValue}) => {
+    try {
+        const result = await client.get(`${PROJECTS_URL}/${projectId}`);
+        return result.data;
+    } catch (error) {
+        const errorMessage = (error as Error).message || "Error";
+        return rejectWithValue(errorMessage);
+    }
+});
+
 export const addProjectsAsync = createAsyncThunk<TProject, TProject>('projects/addProjects', async (projectData, {rejectWithValue}) => {
     try {
         const result = await client.post(PROJECTS_URL, projectData);
@@ -34,7 +44,7 @@ export const addProjectsAsync = createAsyncThunk<TProject, TProject>('projects/a
     }
 });
 
-export const deleteProjectAsync = createAsyncThunk('tasks/deleteProject', async (projectId: number, {rejectWithValue}) => {
+export const deleteProjectAsync = createAsyncThunk('projects/deleteProject', async (projectId: number, {rejectWithValue}) => {
     try {
         const result = await client.delete(`${PROJECTS_URL}/${projectId}`);
         return result.data.id;
@@ -58,10 +68,22 @@ const projectsSlice = createSlice({
             }
         },
     },
+
     extraReducers: builder => {
         builder.addCase(getProjectsAsync.fulfilled, (state, action) => {
             state.data = action.payload;
         });
+
+        builder
+            .addCase(getProjectByIdAsync.fulfilled, (state, action) => {
+                state.currentProject = action.payload;
+                state.status = 'idle';
+                state.error = null;
+            })
+            .addCase(getProjectByIdAsync.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message || 'Failed find task by id';
+            });
 
         builder
             .addCase(addProjectsAsync.fulfilled, (state, action) => {

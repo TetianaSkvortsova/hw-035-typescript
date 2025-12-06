@@ -1,5 +1,5 @@
 export type TProject = {
-    id?: number | null;
+    id?: number;
     title: string;
     description: string;
     priority: 'HIGH' | 'MEDIUM' | 'LOW';

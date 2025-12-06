@@ -2,7 +2,6 @@ import PriorityLabel from "../PriorityLabel/PriorityLabel.tsx";
 import "./ProjectCard.scss";
 import type {ProjectRequiredId} from "../../types/types.ts";
 import ActionMenuProject from "../ActionMenuProject/ActionMenuProject.tsx";
-// import ActionMenu from "../ActionMenu/ActionMenu.tsx";
 
 function ProjectCard({id, title, priority, description}: ProjectRequiredId) {
     return (

@@ -96,6 +96,12 @@ closeRouter.delete(`${API_V1.CLOSE.GET.PROJECTS}/:id`, authenticateJWT, async (r
     return response.status(200).json(result.rows[0]);
 });
 
+closeRouter.get(`${API_V1.CLOSE.GET.PROJECTS}/:id`, authenticateJWT, async (request, response) => {
+    const params = [request.params.id];
+    const result = await dbClient.query(QUERIES.SELECT_PROJECT_BY_ID, params);
+    return response.status(200).json(result.rows[0]);
+});
+
 const routes = listEndpoints(app);
 console.table(routes.map(route => ({
     path: route.path,

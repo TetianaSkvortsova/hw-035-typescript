@@ -18,6 +18,19 @@ export default function NewProjectModal({open, onClose}: NewProjectModalProps) {
         onClose();
     };
 
+    /*const handleFormSubmit = (formData: TTaskRequestData) => {
+        const {id} = formData;
+        if (activeAction === 'EDIT') {
+            dispatch(updateTasksByIdAsync({
+                taskId: id,
+                taskData: formData
+            }));
+        } else {
+            dispatch(addTaskAsync(formData));
+        }
+        onClose();
+    };*/
+
     return (
         <Dialog
             open={open}
