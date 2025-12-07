@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TextField, Button, Box, MenuItem } from '@mui/material';
+import {TextField, Button, Box, MenuItem} from '@mui/material';
 import {useEffect, useState} from "react";
 import type {TProject} from "../../types/types.ts";
 import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
@@ -17,7 +17,7 @@ const initialState: TProject = {
 
 const priorities: TProject['priority'][] = ['HIGH', 'MEDIUM', 'LOW',];
 
-export default function NewProjectForm({ onSubmitSuccess }: NewProjectFormProps) {
+export default function NewProjectForm({onSubmitSuccess}: NewProjectFormProps) {
     const dispatch = useAppDispatch();
     const [formData, setFormData] = useState<TProject>(initialState);
     const activeAction = useAppSelector(state => state.projects.activeAction);
@@ -36,7 +36,6 @@ export default function NewProjectForm({ onSubmitSuccess }: NewProjectFormProps)
 
     useEffect(() => {
         if (activeAction === 'EDIT' && projectData && projectData.id === projectId) {
-            // const { user_full_name, ...taskWithoutFullName } = projectData;
             setFormData(projectData);
         }
     }, [activeAction, projectId, projectData]);
@@ -44,7 +43,7 @@ export default function NewProjectForm({ onSubmitSuccess }: NewProjectFormProps)
     const handleChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ): void => {
-        const { name, value } = event.target;
+        const {name, value} = event.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value,

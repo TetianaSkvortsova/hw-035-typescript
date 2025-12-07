@@ -11,13 +11,65 @@ import FormGroup from '@mui/material/FormGroup';
 import {menuItems, type TMenuItem} from '../../common/menu.ts';
 import {FormControl, Input, InputLabel, MenuItem} from '@mui/material';
 import {Link} from 'react-router';
+import {useEffect, useState} from "react";
+import {client} from "../../store/features/users.ts";
+import {useAppDispatch} from "../../store/hooks.ts";
 
-export default function Header() {
-    const [auth, setAuth] = React.useState(true);
+const OPEN_API_URL = import.meta.env.VITE_API_KEY_OPEN;
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAuth(event.target.checked);
+type HeaderProps = {
+    onAuthChange: (isAuth: boolean) => void;
+}
+
+export default function Header({onAuthChange}: HeaderProps) {
+    const dispatch = useAppDispatch();
+    const [auth, setAuth] = useState(false);
+    const credentials = {
+        email: 'test@test.com',
+        password: 'test@test.com'
     };
+    const [loginData, setLoginData] = useState(credentials);
+    const mainRoute = menuItems.find(item => item.path === '/');
+    const privateRoutes = menuItems.filter(item => item.path !== '/');
+
+    const handleChange = () => {
+        if (!auth) {
+            client.post(`${OPEN_API_URL}/login`, {...loginData})
+                .then((response) => {
+                    const newToken = response.data.token;
+                    client.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+                    if (newToken) {
+                        setAuth(true);
+                        localStorage.setItem('token', newToken);
+                        onAuthChange(true);
+                    }
+                });
+        } else {
+            delete client.defaults.headers.common['Authorization'];
+            setAuth(false);
+            localStorage.removeItem('token');
+            onAuthChange(false);
+        }
+    };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const {id, value} = event.target;
+        setLoginData(prevData => ({
+            ...prevData,
+            [id]: value,
+        }));
+    };
+
+    useEffect(() => {
+        const currentToken = localStorage.getItem('token');
+        const isAuthenticated = !!currentToken;
+        setAuth(isAuthenticated);
+
+        if (isAuthenticated) {
+            client.defaults.headers.common['Authorization'] = `Bearer ${currentToken}`;
+            onAuthChange(true);
+        }
+    }, [dispatch]);
 
     return (
         <Box sx={{flexGrow: 1}}>
@@ -41,7 +93,18 @@ export default function Header() {
             <AppBar position="static" sx={{borderRadius: 2}}>
                 <Toolbar>
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
-                        {menuItems.map((item: TMenuItem) => (
+                        <MenuItem
+                            key={mainRoute.path}
+                            component={Link}
+                            to={mainRoute.path}>
+                            <Typography sx={{
+                                textAlign: 'center',
+                                textTransform: 'uppercase',
+                                fontWeight: 600,
+                                letterSpacing: '.1rem'
+                            }}>{mainRoute.title}</Typography>
+                        </MenuItem>
+                        {auth && privateRoutes.map((item: TMenuItem) => (
                             <MenuItem
                                 key={item.path}
                                 component={Link}
@@ -70,7 +133,7 @@ export default function Header() {
                         <Box>
                             <FormControl sx={{marginRight: '20px', borderBottom: '1px solid #ffffff'}}>
                                 <InputLabel
-                                    htmlFor="login"
+                                    htmlFor="email"
                                     sx={{
                                         padding: '5px 0',
                                         color: '#ffffff',
@@ -78,8 +141,12 @@ export default function Header() {
                                             color: 'inherit',
                                         }
                                     }}>Email address</InputLabel>
-                                <Input id="login" aria-describedby="my-helper-text"/>
-                                {/*<FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>*/}
+                                <Input
+                                    id="email"
+                                    aria-describedby="my-helper-text"
+                                    value={loginData.email}
+                                    onChange={handleInputChange}
+                                />
                             </FormControl>
                             <FormControl sx={{borderBottom: '1px solid #ffffff',}}>
                                 <InputLabel
@@ -91,11 +158,14 @@ export default function Header() {
                                             color: 'inherit',
                                         }
                                     }}>Password</InputLabel>
-                                <Input id="password" aria-describedby="my-helper-text"/>
-                                {/*<FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>*/}
+                                <Input
+                                    id="password"
+                                    aria-describedby="my-helper-text"
+                                    value={loginData.password}
+                                    onChange={handleInputChange}
+                                />
                             </FormControl>
                         </Box>
-
                     )}
                 </Toolbar>
             </AppBar>

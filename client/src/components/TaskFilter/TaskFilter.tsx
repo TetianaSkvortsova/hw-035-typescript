@@ -12,11 +12,9 @@ export default function TaskFilter() {
 
     useEffect(() => {
         if (selectedProject && selectedProject.id) {
-            console.log(selectedProject.id);
             dispatch(getTasksByProjectIdAsync(selectedProject.id));
         } else {
             dispatch(getTasksAsync());
-            console.log('null');
         }
     }, [dispatch, selectedProject]);
 
@@ -29,8 +27,8 @@ export default function TaskFilter() {
                 setSelectedProject(newValue as TProject | null);
             }}
             value={selectedProject}
-            sx={{ width: 300 }}
-            renderInput={(params) => <TextField {...params} label="Project" />}
+            sx={{width: 300}}
+            renderInput={(params) => <TextField {...params} label="Project"/>}
         />
     );
 }

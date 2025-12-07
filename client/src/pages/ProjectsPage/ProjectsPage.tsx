@@ -12,7 +12,7 @@ function ProjectsPage() {
     const [open, setOpen] = useState(false);
     const currentProjectId = useAppSelector(state => state.projects.currentProjectId);
     const activeAction = useAppSelector(state => state.projects.activeAction);
-    const openConfirmDialog = activeAction === 'DELETE'; // <-- Діалог відкритий лише для 'DELETE'
+    const openConfirmDialog = activeAction === 'DELETE';
     const openModalMode = activeAction === 'EDIT';
 
     const handleClose = () => {
@@ -26,7 +26,6 @@ function ProjectsPage() {
 
     const handleCloseConfirm = () => {
         if (currentProjectId !== null) {
-            console.log(currentProjectId);
             dispatch(deleteProjectAsync(currentProjectId));
             dispatch(removeTasksByProjectId({projectId: currentProjectId}));
         }

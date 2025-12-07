@@ -31,17 +31,15 @@ export default function ActionMenu({itemId}: ActionMenuProps) {
     };
 
     const handleMenuItemClick = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => { //
-        const action = event.currentTarget.textContent; //
-        setAnchorEl(null); //
+        const action = event.currentTarget.textContent;
+        setAnchorEl(null);
 
         if (action === 'Edit') {
-            console.log('Edit'); //
-            // 💡 Встановлюємо ID та дію 'EDIT'
-            dispatch(setCurrentTask({ id: itemId, action: 'EDIT' }));
+            console.log('Edit');
+            dispatch(setCurrentTask({id: itemId, action: 'EDIT'}));
         } else if (action === 'Delete') {
             console.log('Delete'); //
-            // 💡 Встановлюємо ID та дію 'DELETE'
-            dispatch(setCurrentTask({ id: itemId, action: 'DELETE' }));
+            dispatch(setCurrentTask({id: itemId, action: 'DELETE'}));
         }
     }
 
@@ -66,7 +64,7 @@ export default function ActionMenu({itemId}: ActionMenuProps) {
                 aria-haspopup="true"
                 onClick={handleClick}
             >
-                <MoreVertIcon />
+                <MoreVertIcon/>
             </IconButton>
             <Menu
                 id="long-menu"

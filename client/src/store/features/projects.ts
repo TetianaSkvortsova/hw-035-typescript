@@ -60,7 +60,7 @@ export const updateProjectByIdAsync = createAsyncThunk<
     { projectId: number; projectData: TProject }
 >(
     'tasks/updateProjectById',
-    async ({ projectId, projectData }, {rejectWithValue}) => {
+    async ({projectId, projectData}, {rejectWithValue}) => {
         try {
             const result = await client.put(`${PROJECTS_URL}/${projectId}`, projectData);
             return result.data;
@@ -74,7 +74,7 @@ const projectsSlice = createSlice({
     name: 'projects',
     initialState,
     reducers: {
-        setCurrentProject: (state, action: PayloadAction<{id: number, action: ActiveAction} | null>) => {
+        setCurrentProject: (state, action: PayloadAction<{ id: number, action: ActiveAction } | null>) => {
             if (action.payload) {
                 state.currentProjectId = action.payload.id;
                 state.activeAction = action.payload.action;
@@ -113,7 +113,7 @@ const projectsSlice = createSlice({
 
         builder
             .addCase(updateProjectByIdAsync.fulfilled, (state, action) => {
-                const { id, ...updates } = action.payload;
+                const {id, ...updates} = action.payload;
                 const index = state.data.findIndex(projects => projects.id === id);
                 if (index !== -1) {
                     state.data[index] = {
@@ -143,5 +143,5 @@ const projectsSlice = createSlice({
     }
 });
 
-export const { setCurrentProject } = projectsSlice.actions;
+export const {setCurrentProject} = projectsSlice.actions;
 export default projectsSlice.reducer;
