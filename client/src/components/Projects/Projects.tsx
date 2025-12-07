@@ -21,7 +21,7 @@ export default function Projects() {
     const {data: projects} = useAppSelector(state => state.projects);
 
     return (
-        <Box sx={{flexGrow: 1, marginTop: 8}}>
+        <Box sx={{flexGrow: 1, marginTop: 0}}>
             <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}}>
                 {projects.map((project: TProject) => (
                     <Grid key={project.id} size={{xs: 2, sm: 4, md: 4}}>

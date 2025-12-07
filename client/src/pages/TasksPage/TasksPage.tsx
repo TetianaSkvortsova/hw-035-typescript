@@ -5,6 +5,7 @@ import NewTaskModal from "../../components/NewTaskModal/NewTaskModal.tsx";
 import ConfirmationDialog from "../../components/ConfirmationDialog/ConfirmationDialog.tsx";
 import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
 import {deleteTaskAsync, setCurrentTask} from "../../store/features/tasks.ts";
+import TaskFilter from "../../components/TaskFilter/TaskFilter.tsx";
 
 function TasksPage() {
     const dispatch = useAppDispatch();
@@ -12,7 +13,7 @@ function TasksPage() {
     const currentTaskId = useAppSelector(state => state.tasks.currentTaskId);
     const activeAction = useAppSelector(state => state.tasks.activeAction);
 
-    const openConfirmDialog = activeAction === 'DELETE'; // <-- Діалог відкритий лише для 'DELETE'
+    const openConfirmDialog = activeAction === 'DELETE';
     const openModalMode = activeAction === 'EDIT';
 
     const handleClose = () => {
@@ -39,12 +40,14 @@ function TasksPage() {
                 width: 'fit-content',
                 marginRight: '0'
             }}>
+                <TaskFilter />
                 <Button
                     variant="contained"
                     size="large"
                     sx={{fontWeight: 700}}
                     onClick={handleOpenCreate}
                 >Add Task</Button>
+
             </Stack>
             <Tasks/>
             <NewTaskModal open={open} onClose={handleClose}/>

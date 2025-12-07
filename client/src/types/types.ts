@@ -5,7 +5,7 @@ export type TProject = {
     priority: 'HIGH' | 'MEDIUM' | 'LOW';
 }
 
-export type ProjectRequiredId = TProject &{
+export type ProjectRequiredId = Omit<TProject, 'id'> &{
     id: number;
 }
 

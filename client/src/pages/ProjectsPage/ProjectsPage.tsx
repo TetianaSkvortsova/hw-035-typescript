@@ -38,7 +38,8 @@ function ProjectsPage() {
             <Stack spacing={2} direction="row" sx={{
                 mx: 'auto',
                 my: 2.5,
-                width: 'fit-content'
+                width: 'fit-content',
+                marginRight: '0'
             }}>
                 <Button
                     variant="contained"
