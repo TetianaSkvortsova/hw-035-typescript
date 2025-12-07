@@ -47,7 +47,14 @@ closeRouter.get(API_V1.CLOSE.GET.PROJECTS, authenticateJWT, async (request, resp
 });
 
 closeRouter.get(API_V1.CLOSE.GET.TASKS, authenticateJWT, async (request, response) => {
-    const result = await dbClient.query(QUERIES.SELECT_ALL_TASKS);
+    const query = request.query;
+    let result;
+    if (Object.keys(query).length > 0) {
+        result = await dbClient.query(QUERIES.SELECT_TASK_BY_PROJECT_ID, [query.projectId]);
+    } else {
+        result = await dbClient.query(QUERIES.SELECT_ALL_TASKS);
+    }
+
     return response.status(200).json(result.rows);
 });
 

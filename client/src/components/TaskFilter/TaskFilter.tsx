@@ -3,6 +3,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
 import {useEffect, useState} from 'react';
 import type {TProject} from "../../types/types.ts";
+import {getTasksAsync, getTasksByProjectIdAsync} from "../../store/features/tasks.ts";
 
 export default function TaskFilter() {
     const dispatch = useAppDispatch();
@@ -12,9 +13,9 @@ export default function TaskFilter() {
     useEffect(() => {
         if (selectedProject && selectedProject.id) {
             console.log(selectedProject.id);
-            // dispatch(getTasksAsync(selectedProject.id));
+            dispatch(getTasksByProjectIdAsync(selectedProject.id));
         } else {
-            // dispatch(getTasksAsync(null));
+            dispatch(getTasksAsync());
             console.log('null');
         }
     }, [dispatch, selectedProject]);

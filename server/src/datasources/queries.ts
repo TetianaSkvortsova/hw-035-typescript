@@ -75,5 +75,20 @@ export const QUERIES = Object.freeze({
                         FROM
                             projects p
                        WHERE
-                           p.id = $1`
+                           p.id = $1`,
+    SELECT_TASK_BY_PROJECT_ID: `SELECT
+                                    t.id,
+                                    u.user_full_name,
+                                    t.title,
+                                    t.description,
+                                    t.priority,
+                                    t.status,
+                                    t.user_id,
+                                    t.project_id,
+                                    p.title as project_name
+                                FROM tasks t
+                                        left outer join users u on u.id = t.user_id
+                                        left outer join projects p on p.id = t.project_id
+                                WHERE
+                                    t.project_id = $1`
 });

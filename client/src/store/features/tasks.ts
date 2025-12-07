@@ -34,6 +34,16 @@ export const getTasksByIdAsync = createAsyncThunk('tasks/getTaskById', async (ta
     }
 });
 
+export const getTasksByProjectIdAsync = createAsyncThunk('tasks/getTaskByProjectId', async (projectId: number, {rejectWithValue}) => {
+    try {
+        const result = await client.get(`${TASKS_URL}?projectId=${projectId}`);
+        return result.data;
+    } catch (error) {
+        const errorMessage = (error as Error).message || "Error";
+        return rejectWithValue(errorMessage);
+    }
+});
+
 export const updateTasksByIdAsync = createAsyncThunk<
     TTaskRequestData,
     { taskId: number; taskData: TTaskRequestData }
@@ -102,6 +112,18 @@ const projectsSlice = createSlice({
                 state.status = 'failed';
                 state.error = action.error.message || 'Failed find task by id';
             });
+
+        builder
+            .addCase(getTasksByProjectIdAsync.fulfilled, (state, action) => {
+                state.data = action.payload;
+                state.status = 'idle';
+                state.error = null;
+            })
+            .addCase(getTasksByProjectIdAsync.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message || 'Failed find task by id';
+            });
+
 
         builder
             .addCase(updateTasksByIdAsync.fulfilled, (state, action) => {

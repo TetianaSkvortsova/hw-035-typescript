@@ -68,11 +68,12 @@ export default function Header() {
                     )}
                     {!auth && (
                         <Box>
-                            <FormControl sx={{marginRight: '20px'}}>
+                            <FormControl sx={{marginRight: '20px', borderBottom: '1px solid #ffffff'}}>
                                 <InputLabel
                                     htmlFor="login"
                                     sx={{
                                         padding: '5px 0',
+                                        color: '#ffffff',
                                         '&.Mui-focused': {
                                             color: 'inherit',
                                         }
@@ -80,11 +81,12 @@ export default function Header() {
                                 <Input id="login" aria-describedby="my-helper-text"/>
                                 {/*<FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>*/}
                             </FormControl>
-                            <FormControl>
+                            <FormControl sx={{borderBottom: '1px solid #ffffff',}}>
                                 <InputLabel
                                     htmlFor="password"
                                     sx={{
                                         padding: '5px 0',
+                                        color: '#ffffff',
                                         '&.Mui-focused': {
                                             color: 'inherit',
                                         }
