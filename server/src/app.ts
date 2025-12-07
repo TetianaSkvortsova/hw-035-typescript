@@ -102,6 +102,14 @@ closeRouter.get(`${API_V1.CLOSE.GET.PROJECTS}/:id`, authenticateJWT, async (requ
     return response.status(200).json(result.rows[0]);
 });
 
+closeRouter.put(`${API_V1.CLOSE.GET.PROJECTS}/:id`, authenticateJWT, async (request, response) => {
+    const project_id = Number(request.params.id);
+    const { title, description, priority} = request.body;
+    const queryParams = [project_id, title, description, priority];
+    const result = await dbClient.query(QUERIES.UPDATE_PROJECT_BY_ID, queryParams);
+    return response.status(200).json(result.rows[0]);
+});
+
 const routes = listEndpoints(app);
 console.table(routes.map(route => ({
     path: route.path,

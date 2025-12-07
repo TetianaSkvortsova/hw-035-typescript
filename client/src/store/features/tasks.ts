@@ -120,7 +120,7 @@ const projectsSlice = createSlice({
                 state.status = 'failed';
                 state.error = action.error.message || 'Failed find task by id';
             });
-        // updateTasksByIdAsync
+
         builder
             .addCase(addTaskAsync.fulfilled, (state, action) => {
                 state.data.push(action.payload);

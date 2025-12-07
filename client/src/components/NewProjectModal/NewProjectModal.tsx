@@ -1,9 +1,8 @@
-// import * as React from 'react';
 import {Dialog, DialogTitle, DialogContent, IconButton} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import NewProjectForm from "../NewProjectForm/NewProjectForm.tsx";
-import {useAppDispatch} from "../../store/hooks.ts";
-import {addProjectsAsync} from "../../store/features/projects.ts";
+import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
+import {addProjectsAsync, updateProjectByIdAsync} from "../../store/features/projects.ts";
 import type {TProject} from "../../types/types.ts";
 
 type NewProjectModalProps = {
@@ -13,23 +12,20 @@ type NewProjectModalProps = {
 
 export default function NewProjectModal({open, onClose}: NewProjectModalProps) {
     const dispatch = useAppDispatch();
-    const handleFormSubmit = (formData: TProject) => {
-        dispatch(addProjectsAsync(formData));
-        onClose();
-    };
+    const activeAction = useAppSelector(state => state.projects.activeAction);
 
-    /*const handleFormSubmit = (formData: TTaskRequestData) => {
+    const handleFormSubmit = (formData: TProject) => {
         const {id} = formData;
-        if (activeAction === 'EDIT') {
-            dispatch(updateTasksByIdAsync({
-                taskId: id,
-                taskData: formData
+        if (activeAction === 'EDIT' && id !== undefined) {
+            dispatch(updateProjectByIdAsync({
+                projectId: id,
+                projectData: formData
             }));
         } else {
-            dispatch(addTaskAsync(formData));
+            dispatch(addProjectsAsync(formData));
         }
         onClose();
-    };*/
+    };
 
     return (
         <Dialog

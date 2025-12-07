@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice, type PayloadAction} from "@reduxjs/toolkit";
 import axios from 'axios';
 import type {TProject, ProjectsState, ActiveAction} from "../../types/types.ts";
+import {updateTasksByIdAsync} from "./tasks.ts";
 
 const initialState: ProjectsState = {
     data: [],
@@ -54,6 +55,21 @@ export const deleteProjectAsync = createAsyncThunk('projects/deleteProject', asy
     }
 });
 
+export const updateProjectByIdAsync = createAsyncThunk<
+    TProject,
+    { projectId: number; projectData: TProject }
+>(
+    'tasks/updateProjectById',
+    async ({ projectId, projectData }, {rejectWithValue}) => {
+        try {
+            const result = await client.put(`${PROJECTS_URL}/${projectId}`, projectData);
+            return result.data;
+        } catch (error) {
+            const errorMessage = (error as Error).message || "Error";
+            return rejectWithValue(errorMessage);
+        }
+    });
+
 const projectsSlice = createSlice({
     name: 'projects',
     initialState,
@@ -93,6 +109,24 @@ const projectsSlice = createSlice({
             .addCase(addProjectsAsync.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message || 'Failed to add project';
+            });
+
+        builder
+            .addCase(updateProjectByIdAsync.fulfilled, (state, action) => {
+                const { id, ...updates } = action.payload;
+                const index = state.data.findIndex(projects => projects.id === id);
+                if (index !== -1) {
+                    state.data[index] = {
+                        ...state.data[index],
+                        ...updates
+                    };
+                }
+                state.status = 'idle';
+                state.error = null;
+            })
+            .addCase(updateTasksByIdAsync.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message || 'Failed find project by id';
             });
 
         builder
