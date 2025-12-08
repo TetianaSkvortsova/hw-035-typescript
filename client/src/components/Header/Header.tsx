@@ -93,17 +93,20 @@ export default function Header({onAuthChange}: HeaderProps) {
             <AppBar position="static" sx={{borderRadius: 2}}>
                 <Toolbar>
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
-                        <MenuItem
-                            key={mainRoute.path}
-                            component={Link}
-                            to={mainRoute.path}>
-                            <Typography sx={{
-                                textAlign: 'center',
-                                textTransform: 'uppercase',
-                                fontWeight: 600,
-                                letterSpacing: '.1rem'
-                            }}>{mainRoute.title}</Typography>
-                        </MenuItem>
+                        {mainRoute &&
+                            <MenuItem
+                                key={mainRoute.path}
+                                component={Link}
+                                to={mainRoute.path}>
+                                <Typography sx={{
+                                    textAlign: 'center',
+                                    textTransform: 'uppercase',
+                                    fontWeight: 600,
+                                    letterSpacing: '.1rem'
+                                }}>{mainRoute.title}</Typography>
+                            </MenuItem>
+                        }
+
                         {auth && privateRoutes.map((item: TMenuItem) => (
                             <MenuItem
                                 key={item.path}
