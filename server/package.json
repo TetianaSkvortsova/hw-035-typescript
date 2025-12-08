@@ -5,7 +5,11 @@
     "dev": "tsx watch --inspect=0.0.0.0:9229 src/app.ts",
     "build": "tsc",
     "start": "node dist/app.js",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint src/**/*.ts",
+    "dumpDbSchema": "docker-compose exec -T -e PGPASSWORD=sqladmin db pg_dump -U sqladmin --clean --if-exists --schema-only expenses > ./db_shcema.sql",
+    "restoreDbSchema": "docker-compose exec -T -e PGPASSWORD=sqladmin db psql -U sqladmin expenses < db_shcema.sql < ./db_shcema.sql",
+    "dumpDbData": "docker-compose exec -T -e PGPASSWORD=sqladmin db pg_dump -U sqladmin --data-only expenses > ./db_data.sql",
+    "restoreDbData": "docker-compose exec -T -e PGPASSWORD=sqladmin db psql -U sqladmin expenses < db_shcema.sql < ./db_data.sql"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
